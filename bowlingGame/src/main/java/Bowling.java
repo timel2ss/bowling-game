@@ -1,71 +1,79 @@
 public class Bowling {
-
-    boolean first = true;
-    private int[] frames = new int[11];
-    private int[] rolls = new int[21];
-    private int[] frames_score = new int[11];
-    private int index = 0;
-
+    private Frame frame = new Frame(11);
+    private Roll roll = new Roll(21);
+    private Frame_score frames_score = new Frame_score(11);
+    private Index index = Index.create(0);
 
     public int getScore() {
-        int frame = 0;
-        for (int i = 0; i < 20; i++) {
-            if(frame==9) {
-                frames[frame] += rolls[i];
+        int frameIndex = 0;
+        for (int i = 0; i < roll.length(); i++) {
+            if(frameIndex == 9) {
+                frame.addFrameScore(frameIndex, roll.getRoll(i));
                 continue;
             }
 
-            if(isStrike(rolls[i])) {
-                first = false;
-                frames[frame++] += 10 + rolls[i + 1] + rolls[i + 2];
+            if(isStrike(i)) {
+                frame.setFrameScore(frameIndex++, scoreForStrike(i));
                 continue;
             }
             else if(isSpare(i)) {
-                frames[frame++] += 10 + rolls[i + 2];
+                frame.setFrameScore(frameIndex++, scoreForSpare(i));
                 i += 1;
                 continue;
             }
 
-            frames[frame++] += rolls[i] + rolls[i + 1];
+            frame.setFrameScore(frameIndex++, scoreForNormal(i));
             i += 1;
         }
         return sum();
     }
 
+    private int scoreForNormal(int i) {
+        return roll.getRoll(i) + roll.getRoll(i+1);
+    }
+
+    private int scoreForSpare(int i) {
+        return 10 + roll.getRoll(i + 2);
+    }
+
+    private int scoreForStrike(int i) {
+        return 10 + roll.getRoll(i + 1) + roll.getRoll(i + 2);
+    }
+
     private int sum() {
         int sum = 0;
-        for (int i = 0; i < frames.length; i++) {
-            sum += frames[i];
-            if(i>=1)
-                frames_score[i] = frames[i] + frames_score[i-1];
-            else
-                frames_score[i] = frames[i];
-//            System.out.println(sum);
+        for (int i = 0; i < frame.length(); i++) {
+            sum += frame.getFrameScore(i);
+            if(i >= 1){
+                frames_score.setScore(i, frame.getFrameScore(i) + frames_score.getScore(i - 1));
+                continue;
+            }
+            frames_score.setScore(i, frame.getFrameScore(i));
         }
         return sum;
     }
 
-    private boolean isStrike(int pins) {
-        return pins == 10;
+    private boolean isStrike(int i) {
+        return roll.getRoll(i) == 10;
     }
 
     private boolean isSpare(int i) {
-        return rolls[i] + rolls[i + 1] == 10;
+        return roll.getRoll(i) + roll.getRoll(i + 1) == 10;
     }
 
     public void roll(int pins) {
-        rolls[index++] = pins;
+        roll.setRoll(index.get(), pins);
     }
 
     public void print() {
-        for(int i=0;i<10;i++) {
+        for(int i = 0; i < frame.length(); i++) {
             System.out.printf("%5d", i + 1);
         }
 
         System.out.println();
 
-        for(int i=0;i<10;i++) {
-            System.out.printf("%5d", frames_score[i]);
+        for(int i = 0; i < frame.length(); i++) {
+            System.out.printf("%5d", frames_score.getScore(i));
         }
     }
 }

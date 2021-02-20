@@ -8,9 +8,11 @@ public class TestBowling {
 
     private Bowling bowling;
 
+
     @Before
     public void setUp() throws Exception {
         bowling = new Bowling();
+
     }
 
     @Test
@@ -46,6 +48,7 @@ public class TestBowling {
     @Test
     public void four_score_for_each_roll() {
         for (int i = 0; i < 20; i++) {
+
             bowling.roll(4); // No strike, No spare
         }
         assertThat(bowling.getScore(), is(80));
