@@ -16,7 +16,7 @@ public class TestBowling {
     }
 
     @Test
-    public void test() {
+    public void roll_test() {
         bowling.roll(0);
         assertThat(bowling.getScore(), is(0));
     }
@@ -38,7 +38,7 @@ public class TestBowling {
     }
 
     @Test
-    public void perfectScore() {
+    public void perfect_score() {
         for (int i = 0; i < 12; i++) {
             bowling.roll(10);
         }
@@ -48,10 +48,17 @@ public class TestBowling {
     @Test
     public void four_score_for_each_roll() {
         for (int i = 0; i < 20; i++) {
-
             bowling.roll(4); // No strike, No spare
         }
         assertThat(bowling.getScore(), is(80));
         bowling.print();
+    }
+
+    @Test
+    public void all_zero_score() {
+        for(int i = 0; i < 20; i++) {
+            bowling.roll(0);
+        }
+        assertThat(bowling.getScore(), is(0));
     }
 }
